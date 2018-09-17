@@ -7,11 +7,9 @@ import java.util.List;
 
 public class MyReader {
     DataInputStream is;
-    String charset;
 
-    MyReader(DataInputStream is, String charset) {
+    MyReader(DataInputStream is) {
         this.is = is;
-        this.charset = charset;
     }
 
     public List<String> getHeaders() throws IOException {
@@ -56,14 +54,13 @@ public class MyReader {
         return size;
     }
 
-    public String getContent(int size) throws IOException {
+    public byte[] getContent(int size) throws IOException {
         byte[] buffer = new byte[size];
         is.readFully(buffer);
         is.read();
         is.read();
 
-        String content = new String(buffer, charset);
-        return content;
+        return buffer;
     }
 
 }

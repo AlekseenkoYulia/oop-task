@@ -9,5 +9,5 @@ abstract public class Strategy {
         this.reader = reader;
     }
 
-    abstract String getContent() throws IOException;
+    abstract byte[] getContent() throws IOException;
 }

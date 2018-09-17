@@ -9,7 +9,6 @@ public class Client {
     private String host;
     private int port;
     private Protocol protocol;
-    String charset;
     private MyReader reader;
     private Strategy strategy;
 
@@ -19,20 +18,22 @@ public class Client {
         this.protocol = protocol;
     }
 
+    public String getHost() {
+        return host;
+    }
+
     public Socket openSocket() throws IOException {
         SocketFactory factory = protocol.getSocketFactory();
         return factory.createSocket(host, port);
     }
 
-    public void makeRequest(int n) {
-        String request = "GET /quote/" + n + " HTTP/1.1\nHost:" + host + "\n\n";
-        //String request = "GET /story/" + n + " HTTP/1.1\nHost:" + host + "\n\n";
+    public void makeRequest(Request r) {
         try {
             Socket s = openSocket();
             OutputStream out = s.getOutputStream();
             DataInputStream is = new DataInputStream(s.getInputStream());
-            out.write(request.getBytes(charset));
-            reader = new MyReader(is, charset);
+            out.write(r.request.getBytes(r.charset));
+            reader = new MyReader(is);
 
             List<String> headers = reader.getHeaders();
             if (!(headers.get(0).equals("HTTP/1.1 200 OK"))) {
@@ -52,9 +53,8 @@ public class Client {
                 }
             }
 
-            String content = strategy.getContent();
-
-            findStory(content);
+            r.headers = headers;
+            r.content = strategy.getContent();
 
             s.close();
             out.close();
@@ -63,16 +63,6 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    public void findStory(String s) {
-        //String start = "<meta property=\"og:description\" content=";
-        String start = "<div class=\"text\">";
-        int startIndex = s.indexOf(start, 0) + start.length();
-        int endIndex = s.indexOf("</div>", startIndex);
-        String story = s.substring(startIndex, endIndex - 1);
-        System.out.println(story);
     }
 }
 

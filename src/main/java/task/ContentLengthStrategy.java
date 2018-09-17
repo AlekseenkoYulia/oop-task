@@ -10,9 +10,8 @@ public class ContentLengthStrategy extends Strategy {
         this.size = size;
     }
 
-    public String getContent() throws IOException {
-        StringBuilder content = new StringBuilder();
-        content.append(reader.getContent(size));
-        return content.toString();
+    public byte[] getContent() throws IOException {
+        return reader.getContent(size);
     }
+
 }

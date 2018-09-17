@@ -1,19 +1,21 @@
 package task;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException {
         String host = "bash.im";
         int port = 443;
         Client c = new Client(host, port, Protocol.HTTPS);
-        c.charset = "windows-1251";
-        Scanner in = new Scanner(System.in);
+        Request r = new Request(c);
+        r.makeBashRequest(452072);
+        System.out.println(r.findBashQuote());
 
-        c.makeRequest(452072);
-        //c.makeRequest(in.nextInt());
-//        while(true) {
-//            c.makeRequest(in.nextInt());
-//        }
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            r.makeBashRequest(in.nextInt());
+            System.out.println(r.findBashQuote());
+        }
     }
 }
